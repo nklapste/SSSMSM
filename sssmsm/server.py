@@ -73,7 +73,7 @@ instance_status_update_model = API.model(
     {
         'name': fields.String(description='Name noting type of the instance'),
         'status': fields.String(description='Updated status of the instance',
-                                enum=InstanceStatus._member_names_),
+                                enum=InstanceStatus._member_names_),  # pylint: disable=no-member
         'date_updated': fields.DateTime(dt_format='iso8601'),
     }
 )

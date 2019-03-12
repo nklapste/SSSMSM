@@ -78,6 +78,7 @@ setup(
     install_requires=[
         "cheroot>=6.5.4,<7.0.0",
         "flask>=1.0.2,<2.0.0",
+        "flask-restplus>=0.12.1,<1.0.0",
     ],
     tests_require=[
         "pytest>=4.1.0,<5.0.0",

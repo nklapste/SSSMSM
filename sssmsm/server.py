@@ -58,7 +58,8 @@ API = Api(
 instance_status_request_model = API.model(
     'instance_status_request',
     {
-        'name': fields.String(description='Name noting type of the instance'),
+        'name': fields.String(description='Name noting type of the instance',
+                              default='ssswms'),
     }
 )
 

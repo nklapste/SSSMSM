@@ -28,6 +28,7 @@ jobs:
     - name: "lint"
       script:
         - python setup.py lint || exit $(($? & 35))
+    - python: 3.5
     - python: 3.7
       dist: xenial
     - stage: build

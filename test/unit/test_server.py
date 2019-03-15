@@ -5,7 +5,6 @@
 import json
 
 import pytest
-from flask import Response
 
 import sssmsm.server
 
@@ -18,7 +17,7 @@ def client():
 
 
 def test_get_index(client):
-    resp: Response = client.get('/')
+    resp = client.get('/')
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "text/html"
@@ -26,7 +25,7 @@ def test_get_index(client):
 
 
 def test_get_api_docs(client):
-    resp: Response = client.get('/api/doc')
+    resp = client.get('/api/doc')
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "text/html"
@@ -34,7 +33,7 @@ def test_get_api_docs(client):
 
 
 def test_post_create(client):
-    resp: Response = client.post(
+    resp = client.post(
         "/api/create",
         data=json.dumps({"name": "ssswms"}),
         content_type='application/json'
@@ -46,7 +45,7 @@ def test_post_create(client):
 
 
 def test_post_destroy(client):
-    resp: Response = client.post(
+    resp = client.post(
         "/api/destroy",
         data=json.dumps({"name": "ssswms"}),
         content_type='application/json'

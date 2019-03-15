@@ -7,6 +7,6 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir .
 
-EXPOSE 9000
+EXPOSE 8800
 
 CMD ["sssmsm"]

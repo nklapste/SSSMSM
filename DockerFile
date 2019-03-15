@@ -1,0 +1,12 @@
+FROM python:3.6-alpine
+
+LABEL maintainer="nklapste@ualberta.ca"
+
+ADD . /app
+WORKDIR /app
+
+RUN pip install --no-cache-dir .
+
+EXPOSE 9000
+
+CMD ["sssmsm"]

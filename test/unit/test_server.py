@@ -44,8 +44,8 @@ def test_receive_graylog_http_alert_callback_no_script(client):
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "application/json"
-    assert b"{}" in resp.data
-    assert resp.json is not None
+    assert b'{"script": null, "script_return_code": null}' in resp.data
+    assert resp.json
 
 
 def test_receive_graylog_http_alert_callback_script(client_with_script):

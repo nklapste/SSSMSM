@@ -85,7 +85,7 @@ def get_parser() -> argparse.ArgumentParser:
                             "callbacks on")
     group.add_argument("-s", "--alert-script",
                        dest="graylog_http_alert_script", default=None,
-                       help="Path to the script to execute on receiving a "
+                       help="Path to the script to trigger on receiving a "
                             "Graylog HTTP alert callback")
 
     group = parser.add_argument_group(title="Server")

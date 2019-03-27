@@ -46,27 +46,32 @@ http_alert_script_triggered_model = API.model(
         'script': fields.String(
             description='Path to the script that was triggered as a result '
                         'of the given Graylog HTTP alert callback',
-            required=False,
         ),
         'script_return_code': fields.Integer(
             description="Return code of the script that was triggered as a "
                         "result of the given Graylog HTTP alert callback",
-            required=False
         )
     }
 )
 
 
 @API.route("/")
-class AlertKickScript(Resource):
+class AlertScriptTrigger(Resource):
     @API.doc(False)
     def get(self):
-        # removing automatic/implicit support for GET requests
+        """Removing automatic/implicit support for GET requests"""
         API.abort(405)
 
-    @API.marshal_with(http_alert_script_triggered_model,
-                      code=200, skip_none=True)
+    @API.marshal_with(http_alert_script_triggered_model, code=200)
     def post(self):
+        """Handle incoming Graylog HTTP alert callbacks and trigger the
+        configured alert script
+
+        On a POST request representing a Graylog HTTP alert callback
+        trigger the configured alert script and return a JSON containing the
+        path to the executed script and the return code of executing
+        such script.
+        """
         # TODO: validate Graylog HTTP alert callback json
         json_data = request.json
 

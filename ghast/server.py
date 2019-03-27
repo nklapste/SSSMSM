@@ -27,7 +27,7 @@ APP = Flask(__name__)
 
 __api_version__ = (0, 0, 0)
 
-API_BLUEPRINT = Blueprint('api', __name__)
+API_BLUEPRINT = Blueprint('ghast api', __name__)
 API = Api(
     API_BLUEPRINT,
     version="{}.{}.{}".format(*__api_version__),
@@ -38,16 +38,16 @@ API = Api(
 )
 
 
-http_alert_script_ack_model = API.model(
-    'http_alert_script_ack',
+http_alert_script_triggered_model = API.model(
+    'http_alert_script_triggered',
     {
         'script': fields.String(
-            description='Path to the script that was executed as a result '
+            description='Path to the script that was triggered as a result '
                         'of the given Graylog HTTP alert callback',
             required=False,
         ),
         'script_return_code': fields.Integer(
-            description="Return code of the script that was executed as a "
+            description="Return code of the script that was triggered as a "
                         "result of the given Graylog HTTP alert callback",
             required=False
         )
@@ -60,7 +60,12 @@ ALERT_SCRIPT_PATH = None
 
 @API.route("/")
 class AlertKickScript(Resource):
-    @API.marshal_with(http_alert_script_ack_model, code=200, skip_none=True)
+    def get(self):
+        # removing automatic/implicit support for GET requests
+        API.abort(405)
+
+    @API.marshal_with(http_alert_script_triggered_model,
+                      code=200, skip_none=True)
     def post(self):
         # TODO: validate Graylog HTTP alert callback json
         json_data = request.json

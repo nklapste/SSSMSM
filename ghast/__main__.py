@@ -79,10 +79,11 @@ def get_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     group = parser.add_argument_group(title="Server")
-    group.add_argument("graylog_http_alert_url",
-                       help="URL endpoint that the Graylog HTTP alert "
-                            "callback will post too")
-    group.add_argument("-s", "--script", dest="graylog_http_alert_script",
+    group.add_argument("-a", "--alert-url", dest="graylog_http_alert_url",
+                       default=None,
+                       help="URL endpoint receive Graylog HTTP alert "
+                            "callbacks on")
+    group.add_argument("-s", "--alert-script", dest="graylog_http_alert_script",
                        default=None,
                        help="Path to the script to execute on receiving a "
                             "Graylog HTTP alert callback")

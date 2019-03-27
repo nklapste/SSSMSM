@@ -83,7 +83,7 @@ setup(
     tests_require=[
         "pytest>=4.1.0,<5.0.0",
         "pytest-cov>=2.6.1,<3.0.0",
-        "pylint>=2.2.2,<3.0.0",
+        "pylint>=1.9.3,<2.0.0",
     ],
     extras_require={
         "docs": [

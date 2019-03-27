@@ -2,9 +2,6 @@ language: python
 
 python: 3.6
 
-services:
-  - docker
-
 stages:
   - test
   - build
@@ -28,6 +25,13 @@ jobs:
     - name: "lint"
       script:
         - python setup.py lint || exit $(($? & 35))
+    - name: "twine check"
+      before_install:
+        - pip install docutils twine
+      before_script:
+        - python setup.py sdist
+      script:
+        - twine check dist/*
     - python: 3.5
     - python: 3.7
       dist: xenial

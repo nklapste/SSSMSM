@@ -60,6 +60,7 @@ ALERT_SCRIPT_PATH = None
 
 @API.route("/")
 class AlertKickScript(Resource):
+    @API.doc(False)
     def get(self):
         # removing automatic/implicit support for GET requests
         API.abort(405)

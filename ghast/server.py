@@ -5,30 +5,32 @@
 from logging import getLogger
 import subprocess
 
-from flask import Flask, request, Blueprint
+from flask import Flask, request, Blueprint, url_for
 from flask_restplus import Api, Resource, fields
 
 __log__ = getLogger(__name__)
 
 APP = Flask(__name__)
 
-# # TODO: make so that it can be enabled/disabled
-# # monkey patch courtesy of
-# # https://github.com/noirbizarre/flask-restplus/issues/54
-# # so that /swagger.json is served over https
-# from flask import url_for
-#
-#
-# @property
-# def specs_url(self):
-#     """Monkey patch for HTTPS"""
-#     return url_for(self.endpoint('specs'), _external=True, _scheme='https')
-# Api.specs_url = specs_url
-
 __api_version__ = (0, 0, 0)
 
 API_BLUEPRINT = Blueprint('ghast api', __name__)
-API = Api(
+
+# to be set within __main__.py
+ALERT_SCRIPT_PATH = None
+# to be set within __main__.py
+API_HTTPS = False
+
+
+class HTTPSApi(Api):
+    @property
+    def specs_url(self):
+        """Monkey patch for HTTPS"""
+        scheme = 'https' if API_HTTPS else 'http'
+        return url_for(self.endpoint('specs'), _external=True, _scheme=scheme)
+
+
+API = HTTPSApi(
     API_BLUEPRINT,
     version="{}.{}.{}".format(*__api_version__),
     title='Graylog HTTP Alert Script Triggerer (ghast) API',
@@ -54,9 +56,6 @@ http_alert_script_triggered_model = API.model(
     }
 )
 
-# to be set within __main__.py
-ALERT_SCRIPT_PATH = None
-
 
 @API.route("/")
 class AlertKickScript(Resource):
@@ -79,4 +78,3 @@ class AlertKickScript(Resource):
             "script": ALERT_SCRIPT_PATH,
             "script_return_code": return_code
         }, 200
-

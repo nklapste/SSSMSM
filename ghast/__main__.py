@@ -14,7 +14,6 @@ from logging.handlers import TimedRotatingFileHandler
 from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
 
 import ghast.server
-from ghast.server import APP
 
 __log__ = getLogger(__name__)
 
@@ -78,19 +77,24 @@ def get_parser() -> argparse.ArgumentParser:
                     "server",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    group = parser.add_argument_group(title="Server")
+
+    group = parser.add_argument_group(title="Graylog HTTP alert callback")
     group.add_argument("-a", "--alert-url", dest="graylog_http_alert_url",
                        default=None,
                        help="URL endpoint receive Graylog HTTP alert "
                             "callbacks on")
-    group.add_argument("-s", "--alert-script", dest="graylog_http_alert_script",
-                       default=None,
+    group.add_argument("-s", "--alert-script",
+                       dest="graylog_http_alert_script", default=None,
                        help="Path to the script to execute on receiving a "
                             "Graylog HTTP alert callback")
+
+    group = parser.add_argument_group(title="Server")
     group.add_argument("-d", "--host", default='localhost',
                        help="Hostname to listen on")
     group.add_argument("-p", "--port", default=8000, type=int,
                        help="Port of the webserver")
+    group.add_argument("--enable-https", dest="api_https", action="store_true",
+                       help="Enable running the Flask-RESTPlus API over HTTPS")
     group.add_argument("--debug", action="store_true",
                        help="Run the server in Flask debug mode")
 
@@ -105,20 +109,32 @@ def main(argv=sys.argv[1:]) -> int:
     args = parser.parse_args(argv)
     init_logging(args, "ghast.log")
 
+    __log__.info(
+        "starting ghast server on "
+        "host: {} port: {} "
+        "graylog_http_alert_url: {} "
+        "graylog_http_alert_script: {}".format(
+            args.host, args.port,
+            args.graylog_http_alert_url,
+            args.graylog_http_alert_script
+        )
+    )
+
     # Setup and start the flask / cheroot server
+    ghast.server.API_HTTPS = args.api_https
     ghast.server.ALERT_SCRIPT_PATH = args.graylog_http_alert_script
     ghast.server.APP.register_blueprint(
         ghast.server.API_BLUEPRINT,
         url_prefix=args.graylog_http_alert_url
     )
     if args.debug:
-        APP.run(
+        ghast.server.APP.run(
             host=args.host,
             port=args.port,
             debug=True
         )
     else:
-        path_info_dispatcher = PathInfoDispatcher({'/': APP})
+        path_info_dispatcher = PathInfoDispatcher({'/': ghast.server.APP})
         server = WSGIServer((args.host, args.port), path_info_dispatcher)
         try:
             server.start()

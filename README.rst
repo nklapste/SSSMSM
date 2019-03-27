@@ -26,10 +26,18 @@ ghast can be installed from source by running:
 
 Within the same directory as ghast's ``setup.py`` file.
 
-Quick start
-===========
+Example Usage
+=============
 
-To get usage help on starting ghast run the following console command:
+To start and enable ghast to trigger the script ``./foo.sh`` when a
+Graylog HTTP alert callback is sent to the url ``http://localhost:8000/bar``
+run the following command:
+
+.. code-block:: bash
+
+    ghast --alert-url /bar --alert-script ./foo.sh
+
+To get additional usage help on ghast run the following console command:
 
 .. code-block:: bash
 

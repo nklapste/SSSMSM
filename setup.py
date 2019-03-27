@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""setup.py for the sssmsm"""
+"""setup.py for the Graylog HTTP Alert Script Triggerer (GHAST)"""
 
 import codecs
 import os
@@ -21,7 +21,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find a valid version")
 
 
-VERSION = find_version("sssmsm", "__init__.py")
+VERSION = find_version("ghast", "__init__.py")
 
 
 class Pylint(test):
@@ -29,7 +29,7 @@ class Pylint(test):
 
     def initialize_options(self):
         test.initialize_options(self)
-        self.pylint_args = "sssmsm --persistent=y --rcfile=.pylintrc --output-format=colorized"
+        self.pylint_args = "ghast --persistent=y --rcfile=.pylintrc --output-format=colorized"
 
     def run_tests(self):
         import shlex
@@ -43,7 +43,7 @@ class PyTest(test):
 
     def initialize_options(self):
         test.initialize_options(self)
-        self.pytest_args = "-v --cov={}".format("sssmsm")
+        self.pytest_args = "-v --cov={}".format("ghast")
 
     def run_tests(self):
         import shlex
@@ -59,13 +59,13 @@ def readme():
 
 
 setup(
-    name="sssmsm",
+    name="ghast",
     version=VERSION,
-    description="A Super Simple Scalable MicroService Manager (SSSMSM)!",
+    description="Graylog HTTP Alert Script Triggerer (ghast)",
     long_description=readme(),
     author="Nathan Klapstein",
     author_email="nklapste@ualberta.ca",
-    url="https://github.com/nklapste/SSSMSM",
+    url="https://github.com/nklapste/ghast",
     license="MIT",
     classifiers=[
         "License :: OSI Approved :: MIT License",
@@ -95,7 +95,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "sssmsm = sssmsm.__main__:main",
+            "ghast = ghast.__main__:main",
         ],
     },
     cmdclass={"test": PyTest, "lint": Pylint},

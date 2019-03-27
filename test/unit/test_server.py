@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""pytests for :mod:`sssmsm.server`"""
+"""pytests for :mod:`ghast.server`"""
 
 import pytest
 
-import sssmsm.server
+import ghast.server
+
+ghast.server.APP.register_blueprint(
+    ghast.server.API_BLUEPRINT,
+    url_prefix="/test"
+)
 
 
 @pytest.fixture(scope="session")
 def client():
-    sssmsm.server.APP.config['TESTING'] = True
-    sssmsm.server.APP.register_blueprint(
-        sssmsm.server.API_BLUEPRINT,
-        url_prefix="/test"
-    )
-    client = sssmsm.server.APP.test_client()
+    ghast.server.APP.config['TESTING'] = True
+    client = ghast.server.APP.test_client()
     yield client
 
 
@@ -31,4 +32,4 @@ def test_get_api_docs(client):
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "text/html"
-    assert b"SSSMSM API" in resp.data
+    assert b"Graylog HTTP Alert Script Triggerer (ghast) API" in resp.data

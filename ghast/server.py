@@ -31,10 +31,9 @@ API_BLUEPRINT = Blueprint('api', __name__)
 API = Api(
     API_BLUEPRINT,
     version="{}.{}.{}".format(*__api_version__),
-    title='SSSMSM API',
+    title='Graylog HTTP Alert Script Triggerer (ghast) API',
     doc='/doc',
-    description='API for the '
-                'Super Simple Scalable MicroService Manager (SSSMSM)!',
+    description='API for the Graylog HTTP Alert Script Triggerer (ghast)',
     contact_email="nklapste@ualberta.ca",
 )
 
@@ -60,7 +59,7 @@ ALERT_SCRIPT_PATH = None
 
 
 @API.route("/")
-class CreateInstance(Resource):
+class AlertKickScript(Resource):
     @API.marshal_with(http_alert_script_ack_model, code=200, skip_none=True)
     def post(self):
         # TODO: validate Graylog HTTP alert callback json

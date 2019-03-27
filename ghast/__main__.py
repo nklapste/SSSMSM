@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""argparse and main entry point script for sssmsm"""
+"""argparse and main entry point script for the
+Graylog HTTP Alert Script Triggerer (ghast)"""
 
 import argparse
 import os
@@ -12,8 +13,8 @@ from logging.handlers import TimedRotatingFileHandler
 
 from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
 
-import sssmsm.server
-from sssmsm.server import APP
+import ghast.server
+from ghast.server import APP
 
 __log__ = getLogger(__name__)
 
@@ -71,10 +72,10 @@ def init_logging(args, log_file_path):
 
 
 def get_parser() -> argparse.ArgumentParser:
-    """Create and return the argparser for sssmsm"""
+    """Create and return the argparser for ghast"""
     parser = argparse.ArgumentParser(
-        description="Start the "
-                    "Super Simple Scalable MicroService Manager (SSSMSM)",
+        description="Start the Graylog HTTP Alert Script Triggerer (ghast) "
+                    "server",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     group = parser.add_argument_group(title="Server")
@@ -98,15 +99,15 @@ def get_parser() -> argparse.ArgumentParser:
 
 
 def main(argv=sys.argv[1:]) -> int:
-    """main entry point for sssmsm"""
+    """main entry point for ghast"""
     parser = get_parser()
     args = parser.parse_args(argv)
-    init_logging(args, "sssmsm.log")
+    init_logging(args, "ghast.log")
 
     # Setup and start the flask / cheroot server
-    sssmsm.server.ALERT_SCRIPT_PATH = args.graylog_http_alert_script
-    sssmsm.server.APP.register_blueprint(
-        sssmsm.server.API_BLUEPRINT,
+    ghast.server.ALERT_SCRIPT_PATH = args.graylog_http_alert_script
+    ghast.server.APP.register_blueprint(
+        ghast.server.API_BLUEPRINT,
         url_prefix=args.graylog_http_alert_url
     )
     if args.debug:

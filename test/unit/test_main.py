@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""pytests for :mod:`sssmsm.__main__`"""
+"""pytests for :mod:`ghast.__main__`"""
 
 import argparse
 import logging
 
 import pytest
 
-from sssmsm.__main__ import get_parser, log_level, main
+from ghast.__main__ import get_parser, log_level, main
 
 
 def test_get_parser():

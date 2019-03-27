@@ -6,6 +6,6 @@ sssmsm
 ======
 
 .. argparse::
-   :module: sssmsm.__main__
+   :module: ghast.__main__
    :func: get_parser
-   :prog: sssmsm
+   :prog: ghast

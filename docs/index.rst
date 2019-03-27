@@ -1,12 +1,12 @@
 .. sssmsm documentation master file
 
 #################################
-Welcome to SSSMSM' documentation!
+Welcome to ghast's documentation!
 #################################
 
 This code is open source, and is `available on GitHub`_.
 
-.. _available on GitHub: https://github.com/nklapste/SSSMSM
+.. _available on GitHub: https://github.com/nklapste/ghast
 
 .. toctree::
    :maxdepth: 2

@@ -2,8 +2,8 @@
 Command Line Use
 ################
 
-sssmsm
-======
+ghast
+=====
 
 .. argparse::
    :module: ghast.__main__

@@ -31,12 +31,21 @@ def client_with_script():
     ghast.server.ALERT_SCRIPT_PATH = None
 
 
+def test_invalid_get_method(client):
+    resp = client.get('/test/')
+    assert resp
+    assert resp.status == "405 METHOD NOT ALLOWED"
+    assert resp.mimetype == "application/json"
+    assert resp.json
+
+
 def test_receive_graylog_http_alert_callback_no_script(client):
     resp = client.post('/test/')
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "application/json"
     assert b"{}" in resp.data
+    assert resp.json is not None
 
 
 def test_receive_graylog_http_alert_callback_script(client_with_script):

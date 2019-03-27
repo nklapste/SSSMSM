@@ -12,6 +12,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
 
+import sssmsm.server
 from sssmsm.server import APP
 
 __log__ = getLogger(__name__)
@@ -77,6 +78,13 @@ def get_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     group = parser.add_argument_group(title="Server")
+    group.add_argument("graylog_http_alert_url",
+                       help="URL endpoint that the Graylog HTTP alert "
+                            "callback will post too")
+    group.add_argument("-s", "--script", dest="graylog_http_alert_script",
+                       default=None,
+                       help="Path to the script to execute on receiving a "
+                            "Graylog HTTP alert callback")
     group.add_argument("-d", "--host", default='localhost',
                        help="Hostname to listen on")
     group.add_argument("-p", "--port", default=8000, type=int,
@@ -96,6 +104,11 @@ def main(argv=sys.argv[1:]) -> int:
     init_logging(args, "sssmsm.log")
 
     # Setup and start the flask / cheroot server
+    sssmsm.server.ALERT_SCRIPT_PATH = args.graylog_http_alert_script
+    sssmsm.server.APP.register_blueprint(
+        sssmsm.server.API_BLUEPRINT,
+        url_prefix=args.graylog_http_alert_url
+    )
     if args.debug:
         APP.run(
             host=args.host,

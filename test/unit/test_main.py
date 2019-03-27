@@ -31,9 +31,9 @@ def test_log_level(log_level_string, expected):
 
 def test_log_level_invalid():
     with pytest.raises(argparse.ArgumentTypeError):
-        log_level("nonsuch")
+        log_level("INVALID_LOG_LEVEL")
 
 
-def test_main_invalid_key_arg():
-    with pytest.raises(SystemExit):
-        main(["nonsuch"])
+def test_main_invalid_url_arg():
+    with pytest.raises(ValueError):
+        main(["INVALID_URL"])

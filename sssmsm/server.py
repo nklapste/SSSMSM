@@ -2,32 +2,16 @@
 
 """Flask server definition"""
 
-import datetime
-from enum import Enum
 from logging import getLogger
+import subprocess
 
-from flask import Flask, render_template, request
+from flask import Flask, request, Blueprint
 from flask_restplus import Api, Resource, fields
 
 __log__ = getLogger(__name__)
 
 APP = Flask(__name__)
 
-######################
-# frontend definition
-######################
-
-
-@APP.route('/', methods=["GET"])
-def index():
-    return render_template('index.html')
-
-
-#################
-# API definition
-#################
-
-# TODO: enable for prod
 # # TODO: make so that it can be enabled/disabled
 # # monkey patch courtesy of
 # # https://github.com/noirbizarre/flask-restplus/issues/54
@@ -43,67 +27,51 @@ def index():
 
 __api_version__ = (0, 0, 0)
 
-
+API_BLUEPRINT = Blueprint('api', __name__)
 API = Api(
-    APP,
+    API_BLUEPRINT,
     version="{}.{}.{}".format(*__api_version__),
     title='SSSMSM API',
-    doc='/api/doc',
+    doc='/doc',
     description='API for the '
                 'Super Simple Scalable MicroService Manager (SSSMSM)!',
     contact_email="nklapste@ualberta.ca",
 )
 
 
-instance_status_request_model = API.model(
-    'instance_status_request',
+http_alert_script_ack_model = API.model(
+    'http_alert_script_ack',
     {
-        'name': fields.String(description='Name noting type of the instance'),
+        'script': fields.String(
+            description='Path to the script that was executed as a result '
+                        'of the given Graylog HTTP alert callback',
+            required=False,
+        ),
+        'script_return_code': fields.Integer(
+            description="Return code of the script that was executed as a "
+                        "result of the given Graylog HTTP alert callback",
+            required=False
+        )
     }
 )
 
-
-class InstanceStatus(Enum):
-    created = 'created'
-    destroyed = 'destroyed'
+# to be set within __main__.py
+ALERT_SCRIPT_PATH = None
 
 
-instance_status_update_model = API.model(
-    'instance_status_update',
-    {
-        'name': fields.String(description='Name noting type of the instance'),
-        'status': fields.String(description='Updated status of the instance',
-                                enum=InstanceStatus._member_names_),  # pylint: disable=no-member
-        'date_updated': fields.DateTime(dt_format='iso8601'),
-    }
-)
-
-
-@API.route('/api/create')
+@API.route("/")
 class CreateInstance(Resource):
-    @API.expect(instance_status_request_model)
-    @API.marshal_with(instance_status_update_model, code=201,
-                      description='Instance created')
+    @API.marshal_with(http_alert_script_ack_model, code=200, skip_none=True)
     def post(self):
+        # TODO: validate Graylog HTTP alert callback json
         json_data = request.json
-        return {
-            "name": json_data["name"],
-            "status": "created",
-            "date_updated": datetime.datetime.utcnow().isoformat()
-        }, 201
 
+        return_code = None
+        if ALERT_SCRIPT_PATH is not None:
+            return_code = subprocess.call(ALERT_SCRIPT_PATH)
 
-@API.route('/api/destroy')
-class DestroyInstance(Resource):
-    @API.expect(instance_status_request_model)
-    @API.marshal_with(instance_status_update_model, code=202,
-                      description='Instance destroyed')
-    def post(self):
-        json_data = request.json
         return {
-            "name": json_data["name"],
-            "status": "destroyed",
-            "date_updated": datetime.datetime.utcnow().isoformat()
-        }, 202
-        # NOTE: using http 202 accepted as we likely have to
-        # process removal slowly
+            "script": ALERT_SCRIPT_PATH,
+            "script_return_code": return_code
+        }, 200
+

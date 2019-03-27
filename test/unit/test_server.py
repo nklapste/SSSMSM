@@ -2,55 +2,33 @@
 
 """pytests for :mod:`sssmsm.server`"""
 
-import json
-
 import pytest
 
 import sssmsm.server
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def client():
     sssmsm.server.APP.config['TESTING'] = True
+    sssmsm.server.APP.register_blueprint(
+        sssmsm.server.API_BLUEPRINT,
+        url_prefix="/test"
+    )
     client = sssmsm.server.APP.test_client()
     yield client
 
 
 def test_get_index(client):
-    resp = client.get('/')
+    resp = client.post('/test/')
     assert resp
     assert resp.status == "200 OK"
-    assert resp.mimetype == "text/html"
-    assert b"Hello World!" in resp.data
+    assert resp.mimetype == "application/json"
+    assert b"{}" in resp.data
 
 
 def test_get_api_docs(client):
-    resp = client.get('/api/doc')
+    resp = client.get('/test/doc')
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "text/html"
     assert b"SSSMSM API" in resp.data
-
-
-def test_post_create(client):
-    resp = client.post(
-        "/api/create",
-        data=json.dumps({"name": "ssswms"}),
-        content_type='application/json'
-    )
-    assert resp
-    assert resp.status == "201 CREATED"
-    assert resp.mimetype == "application/json"
-    assert resp.json
-
-
-def test_post_destroy(client):
-    resp = client.post(
-        "/api/destroy",
-        data=json.dumps({"name": "ssswms"}),
-        content_type='application/json'
-    )
-    assert resp
-    assert resp.status == "202 ACCEPTED"
-    assert resp.mimetype == "application/json"
-    assert resp.json

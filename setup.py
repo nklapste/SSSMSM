@@ -67,6 +67,7 @@ setup(
     author_email="nklapste@ualberta.ca",
     url="https://github.com/nklapste/ghast",
     license="MIT",
+    keywords="graylog http alert callback script trigger server",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",

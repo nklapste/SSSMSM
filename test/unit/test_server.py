@@ -3,8 +3,11 @@
 """pytests for :mod:`ghast.server`"""
 
 import pytest
+import subprocess
 
 import ghast.server
+
+from unittest.mock import patch
 
 ghast.server.APP.register_blueprint(
     ghast.server.API_BLUEPRINT,
@@ -19,12 +22,33 @@ def client():
     yield client
 
 
-def test_get_index(client):
+@pytest.fixture()
+def client_with_script():
+    ghast.server.APP.config['TESTING'] = True
+    ghast.server.ALERT_SCRIPT_PATH = "foobar"
+    client = ghast.server.APP.test_client()
+    yield client
+    ghast.server.ALERT_SCRIPT_PATH = None
+
+
+def test_receive_graylog_http_alert_callback_no_script(client):
     resp = client.post('/test/')
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "application/json"
     assert b"{}" in resp.data
+
+
+def test_receive_graylog_http_alert_callback_script(client_with_script):
+    with patch.object(subprocess, "call", return_value=0) as \
+            mock_subprocess_call:
+        resp = client_with_script.post('/test/')
+        assert resp
+        assert resp.status == "200 OK"
+        assert resp.mimetype == "application/json"
+        assert b'{"script": "foobar", "script_return_code": 0}' in resp.data
+        assert resp.json
+        mock_subprocess_call.assert_called_once_with("foobar")
 
 
 def test_get_api_docs(client):

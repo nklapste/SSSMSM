@@ -36,4 +36,4 @@ def test_log_level_invalid():
 
 def test_main_invalid_url_arg():
     with pytest.raises(ValueError):
-        main(["INVALID_URL"])
+        main(["--alert-url=INVALID_URL"])

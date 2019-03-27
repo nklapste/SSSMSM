@@ -83,3 +83,12 @@ class AlertScriptTrigger(Resource):
             "script": ALERT_SCRIPT_PATH,
             "script_return_code": return_code
         }, 200
+
+
+@APP.after_request
+def after_request(response):
+    """log details on the request and its served response"""
+    __log__.info('%s - "%s %s %s" %s -',
+                 request.remote_addr, request.method, request.full_path,
+                 request.environ.get('SERVER_PROTOCOL'), response.status_code)
+    return response

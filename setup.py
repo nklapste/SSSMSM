@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""setup.py for the Graylog HTTP Alert Script Triggerer (GHAST)"""
+"""setup.py for the Graylog HTTP Alert Script Triggerer (ghast)"""
 
 import codecs
 import os

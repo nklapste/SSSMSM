@@ -18,13 +18,11 @@ Requirements
 Installation
 ============
 
-ghast can be installed from source by running:
+ghast can be installed via pip:
 
 .. code-block:: bash
 
-    pip install .
-
-Within the same directory as ghast's ``setup.py`` file.
+    pip install ghast
 
 Example Usage
 =============

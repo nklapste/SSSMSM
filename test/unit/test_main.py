@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""pytests for :mod:`sssmsm.__main__`"""
+"""pytests for :mod:`ghast.__main__`"""
 
 import argparse
 import logging
 
 import pytest
 
-from sssmsm.__main__ import get_parser, log_level, main
+from ghast.__main__ import get_parser, log_level, main
 
 
 def test_get_parser():
@@ -31,9 +31,9 @@ def test_log_level(log_level_string, expected):
 
 def test_log_level_invalid():
     with pytest.raises(argparse.ArgumentTypeError):
-        log_level("nonsuch")
+        log_level("INVALID_LOG_LEVEL")
 
 
-def test_main_invalid_key_arg():
-    with pytest.raises(SystemExit):
-        main(["nonsuch"])
+def test_main_invalid_url_arg():
+    with pytest.raises(ValueError):
+        main(["--alert-url=INVALID_URL"])

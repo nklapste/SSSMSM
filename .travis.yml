@@ -2,9 +2,6 @@ language: python
 
 python: 3.6
 
-services:
-  - docker
-
 stages:
   - test
   - build
@@ -28,6 +25,14 @@ jobs:
     - name: "lint"
       script:
         - python setup.py lint || exit $(($? & 35))
+    - name: "twine check"
+      before_install:
+        - pip install docutils twine
+      before_script:
+        - python setup.py sdist
+      script:
+        - twine check dist/*
+    - python: 3.5
     - python: 3.7
       dist: xenial
     - stage: build
@@ -45,17 +50,13 @@ jobs:
       script:
         - sphinx-build docs/ build/
     - stage: deploy
-      before_deploy:
-        - docker build -t nklapste/sssmsm:$TRAVIS_TAG .
       deploy:
-        provider: script
-        script: scripts/deploy.sh
+        provider: pypi
+        user: nklapste
+        password:
+          secure: Rx1M/SfoBIWV8RMjBrsojluQoGk6g99TEk1FsbAsPF3Mr3C8BdaKPLW3VCV44ZmL1UBQg0Okwh+TupOBRBkpyeJtTjxNbnwvJtmKAfjgvYwbw4tYagJZlNU5wOKRNKF/4gMRlzdj4B7/upn8fenUSEK33MomxawV/5/o1c/znB5RUZCyBv55nsN6IVTwpGXv8OWcM2x/6UHMpHqyCQEXvnI+mwxoVkb9TpoTLJoWH+Hr9hmHFuZpmGvXXtn7Z6umM2/KEN5V+Cv4pDUnoFpmF6jlkw/89zX3Bd2e8lVBLwV2TRY59Y4Fi0iK4s0nZLsUVvvLersjwZ7a6c+rtu5q60/AjNr+FHrZifZ0vljrgHrrRSzCYoODBYteLUQLAwR/OXgtrG/3LX8mt9mMLaO5SxF7OmDlvNWabWmKIuuiGsMFB39wRd3NMBJC8e9JmLP+kI3Y+AGAtrmktIUtxvIAhd/JQn5pci325R1DkObhOAxSInvVo53z2xuaNMud2cvNDIzTuzMdBFxAoA67oLHEmfMpVIr8YtXwgBATxQ4GO9uCxT4mbCzUcHIRJhjMFyY15NbyASOeIP85JOCOiU9WjLC/NKdpazapcc6vgfgEvcLbhwA+QupJoyOAQmzTXfC7eOKishj8Oi0rsbtNa6ozEKDKW/SUeBj9PO2NJESzbLQ=
         on:
           tags: true
           branch: master
-          repo: $REPO_OWNER/sssmsm
-env:
-  matrix:
-    - secure: 0ovkSj+s1ianqrNmbxpQcXOjfCM4R0C9r2T5Y6JjJHt5Af9mOZRbfxSFZrpX7pDwt50J9RulmsKdpk2BzxJW40bhBqOz33QIBaWKgasL0dwt2WXQuv1JcHCN3iq6UQOIQW4Lg+Y2+U7Hsc11c9v2gcL1QAmG7TuaD4389OZIZasGohBUP7dMx7Rp/FfDPBKER+Netq+HA0gEEcVixdWWsLStbBKuX6EaH/foD5npkf4gi+3FbRauCaCJzsy5e8aaUyEi1BdceXx/o2mb6G4h8rJdRMFvC70chrEyMlrCOu26GoqZpxeWbkSqmDo4iJlzg/PnMQWebbrGja72Mcacq9WA1IFbiLpmHmPqJhGpQzyC4XF31VYSBG9SqyZc9iKe/EZPB1m6VjICsGMI+yUW2MWMH2d871NjYRTxHz5NJfS5Uqy65b+LsPSB+e2mJjP33YQvHOe22w6OkExalMd4YKg7BNnEjKTxcG9k9K50ESVADCRwoADPPaTcui0gg40bK5gnW5c+VWOviWsTwYA0C+tzKFpWoWb9SZtklwZxH5Gz8YJxsLil9DjZKKymZHcAJ5m+Wo9Y9/PqYs9zkTGRbMAb7FTT93p1Fg10LIH2MLxPpmbnQpXljFC/5HLsAtEoILvEZdWjZiWCOuNHR6roHgweR7w3qyyA5/m3Yd8wuls=
-    - secure: qZiNssSqbOjhorkMiernB/5dqAXApFXripbRkoAjZ/lfZ0+fpqs872ptd6QPMXDYlBUMy6stQeGVAz2URRwzvrZuGYC9+7SCdLC6KV22felSYCZ0J6A2QxE7b3ns24MsfjITaX7Mgpzrvn9F7x8qelMpV5lxTDYRogQ1Bcr3QtP5jsfH1ilKD2eHnDfMAUZ/AcMKtzG2NEepOvQeRY6TQ4ReTCGNkAkMrxIE0xbq39X4Iqp9YakVJCmHKq+8Hcy0Xe3avL4lo/p65tQSDbzkxJ18weX6raIHGDKRtzVXuZXthR5fZQ9uDFqQvo8RwzM/K++e9HJWfRMP0Q7pVmCsALYUu8gBN6d6lDQ1jG9G4/kvwvjBbsqC9os0wo/sstkYf1XGWkycJlkZwQlglTpDROjU2wOiblUmEV9PSCdOaIG/IMSY2O204it77G1qBfzNgom9JdzffFEWqezJ/0LaGfItPYPinR+lugPfYk+p0r8GvYi/1OCgDPa9m8+olAP3H2JU/4C8GW2/NJwkuTiwB2b2AR1CFY4Thrv9vnvhW79DcG2s4k8JXH+XO/EZuVjZiSN0/tZIdA4JE/4tlS97NfkVBdj1diQOEhcUzfIbx/sXvjsgiel13MhYCYbEvKsxdTVkgXO+7IBX23zIYVqGAqXRBpgWo01bTYlkSGslxao=
-    - secure: sdbeZjr12UdSELv0GPWxj+w3zx08WwAj6rN1rMhZSFNFyDsN1mWTC8++mlsRA+b8rBZhPu7PMz5gwep5OufMqXnJp/7PH/JARaybHH+eKdCza0MJPOxSmBOP0XN97AaM6s/qvxHLZ5Yjq09HK7B1rc15jxnlrYku9zCQnp79jr/oPMgbG44CfrYTKVAcrmfcDpfvehJS2XVT1MNhFRI5GPw7LeZycW3hMt3AqI57ds2dh4l2lzLyS+jZJIn047BuhSfuCfJA4vFwitUjdj6K9RJCfz4J9J1WEDHuIxvPoIi7nGmmLTDiiBgrkoBRPty8L/2/mVp6HM6txrsnt7FNzPU+Wf0djtxC7Zt2F0EeZbCqpevcRVG4LGTn1ilmgcnyeE8ShTlfX4cysMjO3jXi07tOdlokqz77uCJ1NlnszldM1GtVccRXVQZrqLaKLwZlgA4XHGvCiotnr6Z/QdewW4+LVy8w6OvaWjKfinHIWfTD/J6BN/A02ZKh/1DxqLQk+qKCJxeD3KuyXLJ+NLqcXz4OlcL+t49Qi4Cu0QqTD0p3SlJFoaUCLAwBdKe9JHzbNGbBAh/49wc3e76NiFsirU8qpWO/ns6rZ7sRmwXLhj6zSghVBQgXWB3gtMzqNwXAjmuxLVEjdTdmEa35aGJ+nmsOn01jxLBJtVk6tfh0KdE=
+          repo: nklapste/ghast
+        distributions: "sdist bdist_wheel"

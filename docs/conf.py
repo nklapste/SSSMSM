@@ -11,7 +11,7 @@
 
 copyright = '2019, Nathan Klapstein'
 author = 'Nathan Klapstein'
-project = "sssmsm"
+project = "ghast"
 
 
 def find_version(*file_paths):
@@ -27,7 +27,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find a valid version")
 
 
-version, release = find_version("..", "sssmsm", "__init__.py")
+version, release = find_version("..", "ghast", "__init__.py")
 
 # -- General configuration ---------------------------------------------------
 
@@ -86,7 +86,7 @@ html_theme_options = {
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'sssmsmdoc'
+htmlhelp_basename = 'ghastdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -113,7 +113,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'sssmsm.tex', 'sssmsm Documentation',
+    (master_doc, 'ghast.tex', 'ghast Documentation',
      'Nathan Klapstein', 'manual'),
 ]
 
@@ -123,7 +123,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'sssmsm', 'sssmsm Documentation', [author], 1)
+    (master_doc, 'ghast', 'ghast Documentation', [author], 1)
 ]
 
 
@@ -133,8 +133,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'sssmsm', 'sssmsm Documentation', author, 'sssmsm',
-     'A Super Simple Scalable MicroService Manager (SSSMSM)!'),
+    (master_doc, 'ghast', 'ghast Documentation', author, 'ghast',
+     'A simple server for triggering a script on a Graylog '
+     'HTTP alert callback!'),
 ]
 
 
@@ -152,7 +153,7 @@ def run_apidoc(_):
     import sys
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     cur_dir = os.path.abspath(os.path.dirname(__file__))
-    module = os.path.join(cur_dir, "..", "sssmsm")
+    module = os.path.join(cur_dir, "..", "ghast")
     main(["--module-first", "--separate", "--implicit-namespaces", module,
           "--output-dir", os.path.join(cur_dir, "api")])
 

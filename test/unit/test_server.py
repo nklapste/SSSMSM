@@ -1,57 +1,68 @@
 # -*- coding: utf-8 -*-
 
-"""pytests for :mod:`sssmsm.server`"""
-
-import json
+"""pytests for :mod:`ghast.server`"""
 
 import pytest
-from flask import Response
+import subprocess
 
-import sssmsm.server
+import ghast.server
+
+from unittest.mock import patch
+
+ghast.server.APP.register_blueprint(
+    ghast.server.API_BLUEPRINT,
+    url_prefix="/test"
+)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def client():
-    sssmsm.server.APP.config['TESTING'] = True
-    client = sssmsm.server.APP.test_client()
+    ghast.server.APP.config['TESTING'] = True
+    client = ghast.server.APP.test_client()
     yield client
 
 
-def test_get_index(client):
-    resp: Response = client.get('/')
+@pytest.fixture()
+def client_with_script():
+    ghast.server.APP.config['TESTING'] = True
+    ghast.server.ALERT_SCRIPT_PATH = "foobar"
+    client = ghast.server.APP.test_client()
+    yield client
+    ghast.server.ALERT_SCRIPT_PATH = None
+
+
+def test_invalid_get_method(client):
+    resp = client.get('/test/')
+    assert resp
+    assert resp.status == "405 METHOD NOT ALLOWED"
+    assert resp.mimetype == "application/json"
+    assert resp.json
+
+
+def test_receive_graylog_http_alert_callback_no_script(client):
+    resp = client.post('/test/')
     assert resp
     assert resp.status == "200 OK"
-    assert resp.mimetype == "text/html"
-    assert b"Hello World!" in resp.data
+    assert resp.mimetype == "application/json"
+    assert b'{"script": null, "script_return_code": null}' in bytes(resp.data)
+    assert resp.json
+
+
+def test_receive_graylog_http_alert_callback_script(client_with_script):
+    with patch.object(subprocess, "call", return_value=0) as \
+            mock_subprocess_call:
+        resp = client_with_script.post('/test/')
+        assert resp
+        assert resp.status == "200 OK"
+        assert resp.mimetype == "application/json"
+        assert b'{"script": "foobar", "script_return_code": 0}' in bytes(resp.data)
+        assert resp.json
+        mock_subprocess_call.assert_called_once_with("foobar")
 
 
 def test_get_api_docs(client):
-    resp: Response = client.get('/api/doc')
+    resp = client.get('/test/doc')
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "text/html"
-    assert b"SSSMSM API" in resp.data
-
-
-def test_post_create(client):
-    resp: Response = client.post(
-        "/api/create",
-        data=json.dumps({"name": "ssswms"}),
-        content_type='application/json'
-    )
-    assert resp
-    assert resp.status == "201 CREATED"
-    assert resp.mimetype == "application/json"
-    assert resp.json
-
-
-def test_post_destroy(client):
-    resp: Response = client.post(
-        "/api/destroy",
-        data=json.dumps({"name": "ssswms"}),
-        content_type='application/json'
-    )
-    assert resp
-    assert resp.status == "202 ACCEPTED"
-    assert resp.mimetype == "application/json"
-    assert resp.json
+    assert b"Graylog HTTP Alert Script Triggerer (ghast) API" in bytes(resp.data)

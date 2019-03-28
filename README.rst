@@ -13,7 +13,7 @@ A simple server for triggering a script on a Graylog HTTP alert callback!
 Requirements
 ============
 
-* Python 3.6+
+* Python 3.5+
 
 Installation
 ============

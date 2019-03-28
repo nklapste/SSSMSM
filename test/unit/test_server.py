@@ -44,8 +44,9 @@ def test_receive_graylog_http_alert_callback_no_script(client):
     assert resp
     assert resp.status == "200 OK"
     assert resp.mimetype == "application/json"
-    assert b'{"script": null, "script_return_code": null}' in bytes(resp.data)
     assert resp.json
+    assert resp.json["script"] is None
+    assert resp.json["script_return_code"] is None
 
 
 def test_receive_graylog_http_alert_callback_script(client_with_script):
@@ -55,9 +56,10 @@ def test_receive_graylog_http_alert_callback_script(client_with_script):
         assert resp
         assert resp.status == "200 OK"
         assert resp.mimetype == "application/json"
-        assert b'{"script": "foobar", "script_return_code": 0}' in bytes(resp.data)
         assert resp.json
         mock_subprocess_call.assert_called_once_with("foobar")
+        assert resp.json["script"] == 'foobar'
+        assert resp.json["script_return_code"] == 0
 
 
 def test_get_api_docs(client):

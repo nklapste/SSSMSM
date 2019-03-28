@@ -25,7 +25,7 @@ VERSION = find_version("ghast", "__init__.py")
 
 
 class Pylint(test):
-    user_options = [('pylint-args=', 'a', "Arguments to pass to pylint")]
+    user_options = [("pylint-args=", "a", "Arguments to pass to pylint")]
 
     def initialize_options(self):
         test.initialize_options(self)

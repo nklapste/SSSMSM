@@ -54,7 +54,7 @@ jobs:
         provider: pypi
         user: nklapste
         password:
-          secure: Rx1M/SfoBIWV8RMjBrsojluQoGk6g99TEk1FsbAsPF3Mr3C8BdaKPLW3VCV44ZmL1UBQg0Okwh+TupOBRBkpyeJtTjxNbnwvJtmKAfjgvYwbw4tYagJZlNU5wOKRNKF/4gMRlzdj4B7/upn8fenUSEK33MomxawV/5/o1c/znB5RUZCyBv55nsN6IVTwpGXv8OWcM2x/6UHMpHqyCQEXvnI+mwxoVkb9TpoTLJoWH+Hr9hmHFuZpmGvXXtn7Z6umM2/KEN5V+Cv4pDUnoFpmF6jlkw/89zX3Bd2e8lVBLwV2TRY59Y4Fi0iK4s0nZLsUVvvLersjwZ7a6c+rtu5q60/AjNr+FHrZifZ0vljrgHrrRSzCYoODBYteLUQLAwR/OXgtrG/3LX8mt9mMLaO5SxF7OmDlvNWabWmKIuuiGsMFB39wRd3NMBJC8e9JmLP+kI3Y+AGAtrmktIUtxvIAhd/JQn5pci325R1DkObhOAxSInvVo53z2xuaNMud2cvNDIzTuzMdBFxAoA67oLHEmfMpVIr8YtXwgBATxQ4GO9uCxT4mbCzUcHIRJhjMFyY15NbyASOeIP85JOCOiU9WjLC/NKdpazapcc6vgfgEvcLbhwA+QupJoyOAQmzTXfC7eOKishj8Oi0rsbtNa6ozEKDKW/SUeBj9PO2NJESzbLQ=
+          secure: CF4K63KQgoOwxi6QTvq5vmnJ3jON9iErHsbHEtlU8q2Yf0yKLZ/afFbZlrC14RQDxVvI3oX9SGEgJh0O73j1Kw1LH9AyBxIuT7+YtEX3eBiMPIVkK1nU8hc8uly4JKr9AArikFbCy9BJzyHzk92PmA8DzVYistnLy3WD5g/1JjG2GV+jGHZrUSdZxPTbQCpwgj3WFpsj6eTlJcUvotF70ea4SeF32ptPqJadEsV2bVHiQft6VuPHoWTcsCGKPoR2vM/DPvM7ar81QIDyBGC1s1hO9LSYYnXOA0zp0nXO/hw2CnbJNwYf/xG6uwFVtizi7ag18AGcjUrCMZpP++bDbBnRqR8NbE3dnNCdA+s8uwRBeCOk3D5NUQGr6lBUUY6g3CpY1dVJ63zy2AjukIHnPKWxYggQLdCStUjOBNMG44YNp2keoVUSetAiYwTOi6RXTIfjQ6QFGLPQdEhofQf7iZ3tn2m9xI7twOuxRczE0e9lOwdmIxSfBYQSTlhD0kpWpS2jha+Wtgu/nFyialD/0EiF39jodh4+Mpi9PfpvFizPGF0r4ck9jUkylnEYDSjVLarxRgdBxv7Mo2ClQwIpS/jh8vHuXH6227MsA12w2Xe/XZzXKjx7Ui2zli/fo4GYb3dDoR+wKS04nwLHWEA1lGge4HzO3HiLYdBuSqyN4qE=
         on:
           tags: true
           branch: master

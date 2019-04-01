@@ -50,6 +50,7 @@ jobs:
       script:
         - sphinx-build docs/ build/
     - stage: deploy
+    - name: "pypi"
       deploy:
         provider: pypi
         user: nklapste
@@ -60,3 +61,18 @@ jobs:
           branch: master
           repo: nklapste/ghast
         distributions: "sdist bdist_wheel"
+    - name: "docker"
+      before_deploy:
+        - docker build -t nklapste/ssswms:$TRAVIS_TAG .
+      deploy:
+        provider: script
+        script: sh $TRAVIS_BUILD_DIR/scripts/deploy.sh
+        on:
+          tags: true
+          branch: master
+          repo: nklapste/ghast
+
+env:
+  global:
+    - secure: JFpRji7ix6xKmXwkhvzDY6biahJS6vDoLEFlPVYrJM6JN+CQuqsBDVgUA889uGRnkwyK0xUW6E/VvUGVNbenBzeb4usCFe7HC0wb5uI+tpaN+FLSrz2gCNzKXNS3QPlv0LohEvAu0tACtjtnC6QjHVbsb9T5usA+Vueotq6HLrju5rT73jNMiRlaSCehcmZJDe+/vki90kwTDYL/gz8Gh8ZEa6CTTQen0i+hi4Z0Inq0b3SEBwCqzK1tDuRFYD+OgSV9jlvzsZ7iQCoi81csF4GAu/0xhIQVJj6GcVNpQDkIqWdf9ynw6Te1YwfUeD3hCJ3vX/h1G2GhV58h2BQdiAWmk7HHFO69KkoVcBNNLdra6DJd9A2dAKNMstE15G/x8abclENo1/HGk3c47x3fRxz6/s+3yJy8+UZNN1ulWlv7uGsl//nbtu+QFfB2Jkv9TonGx4A9Wkx3hzDku+2iQx+iUqcqBzgKZBgqtYxjpwA+Yyy8pf9Mg6VbPYuwlIdOtgvxvEo2yBYXdVOuBVVDfqUJxI0LxaC0RyjfySTpphNLWsPqyOFuu/nWmN7YDuGQ6TfH7ne0PRD+Lq22AKuakkyri8ckKGxihmM5ysIJ9hRdBC8CpracByci0+luON57toGb4FI0CYK5Q2YSs6azX1VCrzsud4qs2SQyjts4BEo=
+    - secure: PmsWBcfztpugbofll3rJK+1wTLFvskMXDsD8cB4bJSAYnO+JyFL4x4lGFaRO/Cj5LzN+LHqHHrp3Vm20dSln66WolvMVdhytM7Z3ejm0UoPH4iaZlPoMAaEMioOWesAHNgEBZ/RnnDWdpSwNvzrGfvpdFK4Eu9WKf7f/A8rwAN7OrWZUYgda/4jcJR3yrEpeNOKTZd4yVh62kd9aowmOteGt6+98j25qcYzqaFoLCNgUy72JuNZotF6ISOBSPYNjITrQLVFvK8vz0q6+Fyhukg+0DJ9nlwduKo0PJMO6bn/d6DUtU5EdcVeN/oTzlRWVKDFtwkyVBv2jFl17/jw1U7SE9J/XV1d0HdCUl3SuzIiyUdWt+nfR1BIaqY4mKbQu41MSr9wWnd8DKeDzIqTyvyR/sBr/n4sadxp1GoQNXk9zbr7dXVjCUpbPifdZ3LHo4kmuuDxWcRWiDst5VXx0cTooc0SHs0vGEpySiRJsF8j+7l3Z5/1XW4KSfWC6zy2OdPaqb+HhI5EZgfRt4gpEbN5p6iABwwXStb6KRDYR7TFgVa29a/6BxBhs2Z6/ygoy4oTFnYjWxQ1tF+9YShe+rhcn8lYXspM6vI6gl/xZyysfmS+VEmrYLu7DJGijIbQiZTywFcL8jiWrM3Zx/VGaMpqHkFprffJ9lGzBV8ImSQY=

@@ -50,6 +50,7 @@ jobs:
       script:
         - sphinx-build docs/ build/
     - stage: deploy
+    - name: "pypi"
       deploy:
         provider: pypi
         user: nklapste

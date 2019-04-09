@@ -20,6 +20,8 @@ API_BLUEPRINT = Blueprint('ghast api', __name__)
 ALERT_SCRIPT_PATH = None
 # to be set within __main__.py
 API_HTTPS = False
+# to be set within __main__.py
+GRAYLOG_HTTP_ALERT_SCHEMA = None
 
 
 class HTTPSApi(Api):
@@ -62,6 +64,7 @@ class AlertScriptTrigger(Resource):
         """Removing automatic/implicit support for GET requests"""
         API.abort(405)
 
+    @API.expect(GRAYLOG_HTTP_ALERT_SCHEMA, validate=True)
     @API.marshal_with(http_alert_script_triggered_model, code=200)
     def post(self):
         """Handle incoming Graylog HTTP alert callbacks and trigger the

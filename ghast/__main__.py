@@ -5,6 +5,7 @@
 Graylog HTTP Alert Script Triggerer (ghast)"""
 
 import argparse
+import json
 import os
 import sys
 import logging
@@ -87,6 +88,12 @@ def get_parser() -> argparse.ArgumentParser:
                        dest="graylog_http_alert_script", default=None,
                        help="Path to the script to trigger on receiving a "
                             "Graylog HTTP alert callback")
+    group.add_argument(
+        "-f", "--alert-schema", dest="graylog_http_alert_schema", default=None,
+        help="Enable using the JSON Schema (Draft V4) at the given path to"
+             "validate incoming Graylog HTTP alerts. Graylog HTTP alerts "
+             "that fail validate against the given JSON Schema will obtain "
+             "a HTTP 400 Error.")
 
     group = parser.add_argument_group(title="Server")
     group.add_argument("-d", "--host", default='localhost',
@@ -123,10 +130,16 @@ def main(argv=sys.argv[1:]) -> int:
     # Setup and start the flask / cheroot server
     ghast.server.API_HTTPS = args.api_https
     ghast.server.ALERT_SCRIPT_PATH = args.graylog_http_alert_script
+    if args.graylog_http_alert_schema is not None:
+        with open(args.graylog_http_alert_schema) as f:
+            ghast.server.GRAYLOG_HTTP_ALERT_SCHEMA = \
+                ghast.server.API.schema_model('graylog_http_alert',
+                                              json.load(f))
     ghast.server.APP.register_blueprint(
         ghast.server.API_BLUEPRINT,
         url_prefix=args.graylog_http_alert_url
     )
+
     if args.debug:
         ghast.server.APP.run(
             host=args.host,

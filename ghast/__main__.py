@@ -133,7 +133,7 @@ def main(argv=sys.argv[1:]) -> int:
     if args.graylog_http_alert_schema is not None:
         with open(args.graylog_http_alert_schema) as f:
             ghast.server.GRAYLOG_HTTP_ALERT_SCHEMA = \
-                ghast.server.API.schema_model('graylog_http_alert',
+                ghast.server.API.schema_model("graylog_http_alert",
                                               json.load(f))
     ghast.server.APP.register_blueprint(
         ghast.server.API_BLUEPRINT,
@@ -147,7 +147,7 @@ def main(argv=sys.argv[1:]) -> int:
             debug=True
         )
     else:
-        path_info_dispatcher = PathInfoDispatcher({'/': ghast.server.APP})
+        path_info_dispatcher = PathInfoDispatcher({"/": ghast.server.APP})
         server = WSGIServer((args.host, args.port), path_info_dispatcher)
         try:
             server.start()

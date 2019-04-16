@@ -90,7 +90,7 @@ def get_parser() -> argparse.ArgumentParser:
                             "Graylog HTTP alert callback")
     group.add_argument(
         "-f", "--alert-schema", dest="graylog_http_alert_schema", default=None,
-        help="Enable using the JSON Schema (Draft V4) at the given path to"
+        help="Enable using the JSON Schema (Draft V4) at the given path to "
              "validate incoming Graylog HTTP alerts. Graylog HTTP alerts "
              "that fail validate against the given JSON Schema will obtain "
              "a HTTP 400 Error.")
